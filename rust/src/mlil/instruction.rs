@@ -17,6 +17,7 @@ use super::MediumLevelILFunction;
 pub struct MediumLevelILInstruction {
     pub function: Ref<MediumLevelILFunction>,
     pub address: u64,
+    pub idx: usize,
     pub kind: MediumLevelILInstructionKind,
 }
 
@@ -710,6 +711,7 @@ impl MediumLevelILInstruction {
         Self {
             function,
             address: op.address,
+            idx,
             kind,
         }
     }
@@ -1018,6 +1020,7 @@ impl MediumLevelILInstruction {
         MediumLevelILLiftedInstruction {
             function: self.function.clone(),
             address: self.address,
+            idx: self.idx,
             kind,
         }
     }

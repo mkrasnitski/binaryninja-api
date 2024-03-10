@@ -15,6 +15,7 @@ use super::{HighLevelILFunction, HighLevelILLiftedInstruction, HighLevelILLifted
 pub struct HighLevelILInstruction {
     pub function: Ref<HighLevelILFunction>,
     pub address: u64,
+    pub idx: usize,
     pub kind: HighLevelILInstructionKind,
 }
 
@@ -627,6 +628,7 @@ impl HighLevelILInstruction {
         Self {
             function,
             address: op.address,
+            idx,
             kind,
         }
     }
@@ -875,6 +877,7 @@ impl HighLevelILInstruction {
         HighLevelILLiftedInstruction {
             function: self.function.clone(),
             address: self.address,
+            idx: self.idx,
             kind,
         }
     }

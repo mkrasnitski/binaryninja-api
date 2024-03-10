@@ -23,6 +23,7 @@ pub enum HighLevelILLiftedOperand {
 pub struct HighLevelILLiftedInstruction {
     pub function: Ref<HighLevelILFunction>,
     pub address: u64,
+    pub idx: usize,
     pub kind: HighLevelILLiftedInstructionKind,
 }
 
