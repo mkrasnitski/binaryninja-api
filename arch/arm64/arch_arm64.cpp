@@ -2373,6 +2373,8 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 		// x16.q = add.q(x16.q, pltoffset) || x16.q = x16.q
 		// jump(x17.q)
 
+		Ref<Architecture> arch = func->GetArchitecture();
+
 		if (il->GetInstructionCount() < 4)
 			return false;
 
@@ -2381,8 +2383,6 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 			return false;
 		LowLevelILInstruction adrpOperand = adrp.GetSourceExpr<LLIL_SET_REG>();
 		if (!LowLevelILFunction::IsConstantType(adrpOperand.operation))
-			return false;
-		if (adrpOperand.size != func->GetArchitecture()->GetAddressSize())
 			return false;
 		uint64_t pltPage = adrpOperand.GetConstant();
 		uint32_t pltReg = adrp.GetDestRegister<LLIL_SET_REG>();
@@ -2393,7 +2393,7 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 		LowLevelILInstruction ldOperand = ld.GetSourceExpr<LLIL_SET_REG>();
 		if (ldOperand.operation != LLIL_LOAD)
 			return false;
-		if (ldOperand.size != func->GetArchitecture()->GetAddressSize())
+		if (adrpOperand.size != arch->GetAddressSize() && ldOperand.size != arch->GetAddressSize())
 			return false;
 		LowLevelILInstruction ldAddrOperand = ldOperand.GetSourceExpr<LLIL_LOAD>();
 		uint64_t entry = pltPage;
@@ -2426,7 +2426,7 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 		LowLevelILInstruction add = il->GetInstruction(2);
 		if (add.operation != LLIL_SET_REG)
 			return false;
-		if (add.GetDestRegister<LLIL_SET_REG>() != pltReg)
+		if (arch->GetRegisterInfo(add.GetDestRegister<LLIL_SET_REG>()).fullWidthRegister != pltReg)
 			return false;
 		LowLevelILInstruction addOperand = add.GetSourceExpr<LLIL_SET_REG>();
 
@@ -2436,7 +2436,7 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 			LowLevelILInstruction addRightOperand = addOperand.GetRightExpr<LLIL_ADD>();
 			if (addLeftOperand.operation != LLIL_REG)
 				return false;
-			if (addLeftOperand.GetSourceRegister<LLIL_REG>() != pltReg)
+			if (arch->GetRegisterInfo(addLeftOperand.GetSourceRegister<LLIL_REG>()).fullWidthRegister != pltReg)
 				return false;
 			if (!LowLevelILFunction::IsConstantType(addRightOperand.operation))
 				return false;
@@ -2444,7 +2444,7 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
 				return false;
 		}
 		else if ((addOperand.operation != LLIL_REG) ||
-		         (addOperand.GetSourceRegister<LLIL_REG>() != pltReg))  // Simple assignment
+		         (arch->GetRegisterInfo(addOperand.GetSourceRegister<LLIL_REG>()).fullWidthRegister != pltReg))  // Simple assignment
 			return false;
 
 		LowLevelILInstruction jump = il->GetInstruction(3);
@@ -2455,7 +2455,7 @@ class Arm64ImportedFunctionRecognizer : public FunctionRecognizer
                                             jump.GetDestExpr<LLIL_TAILCALL>();
 		if (jumpOperand.operation != LLIL_REG)
 			return false;
-		if (jumpOperand.GetSourceRegister<LLIL_REG>() != targetReg)
+		if (jumpOperand.GetSourceRegister<LLIL_REG>() != arch->GetRegisterInfo(targetReg).fullWidthRegister)
 			return false;
 
 		Ref<Symbol> funcSym = Symbol::ImportedFunctionFromImportAddressSymbol(sym, func->GetStart());
