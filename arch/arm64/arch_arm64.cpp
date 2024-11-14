@@ -283,7 +283,7 @@ class Arm64Architecture : public Architecture
 	}
 
 
-	virtual size_t GetAddressSize() const override { return 8; }
+	virtual size_t GetAddressSize() const override { return 4; }
 
 
 	virtual size_t GetInstructionAlignment() const override { return 4; }

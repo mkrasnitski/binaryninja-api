@@ -369,7 +369,7 @@ static size_t ReadILOperand(LowLevelILFunction& il, InstructionOperand& operand,
 		else
 			return il.Const(resultSize, operand.immediate);
 	case LABEL:
-		return il.ConstPointer(8, operand.immediate);
+		return il.ConstPointer(4, operand.immediate);
 	case REG:
 		if (IS_ZERO_REG(operand.reg[0]))
 			return il.Const(resultSize, 0);
@@ -824,7 +824,7 @@ static void LoadStoreOperand(LowLevelILFunction& il, bool load,
 			break;
 		case LABEL:
 			il.AddInstruction(ILSETREG_O(
-			    operand1, il.Operand(1, il.Load(load_store_sz, il.ConstPointer(8, IMM_O(operand2))))));
+			    operand1, il.Operand(1, il.Load(load_store_sz, il.ConstPointer(4, IMM_O(operand2))))));
 			break;
 		case IMM32:
 		case IMM64:
@@ -965,7 +965,7 @@ static void LoadStoreOperandSize(LowLevelILFunction& il, bool load, bool sign_ex
 			break;
 		case LABEL:
 			il.AddInstruction(ILSETREG_O(
-			    operand1, il.Operand(1, il.Load(size, il.ConstPointer(8, IMM_O(operand2))))));
+			    operand1, il.Operand(1, il.Load(size, il.ConstPointer(4, IMM_O(operand2))))));
 			break;
 		default:
 			il.AddInstruction(il.Unimplemented());
@@ -1203,7 +1203,7 @@ bool GetLowLevelILForInstruction(
 		break;
 	case ARM64_ADR:
 	case ARM64_ADRP:
-		il.AddInstruction(ILSETREG_O(operand1, il.ConstPointer(REGSZ_O(operand1), IMM_O(operand2))));
+		il.AddInstruction(ILSETREG_O(operand1, il.ConstPointer(4, IMM_O(operand2))));
 		break;
 	case ARM64_ASR:
 		il.AddInstruction(ILSETREG_O(operand1, il.ArithShiftRight(REGSZ_O(operand2), ILREG_O(operand2),
