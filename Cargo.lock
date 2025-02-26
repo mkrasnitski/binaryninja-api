@@ -186,6 +186,7 @@ checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 name = "binaryninja"
 version = "0.1.0"
 dependencies = [
+ "binaryninja-abstract-type",
  "binaryninjacore-sys",
  "insta",
  "log",
@@ -197,6 +198,25 @@ dependencies = [
  "serial_test",
  "tempfile",
  "thiserror 2.0.12",
+]
+
+[[package]]
+name = "binaryninja-abstract-type"
+version = "0.1.0"
+dependencies = [
+ "binaryninja",
+ "binaryninja-abstract-type-derive",
+ "elain",
+]
+
+[[package]]
+name = "binaryninja-abstract-type-derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "proc-macro2-diagnostics",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -700,6 +720,12 @@ name = "either"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
+
+[[package]]
+name = "elain"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ba39bdf557eef05f2c1c2e986cbab6b85329b922e7606e5b63ee4c5037ba77a"
 
 [[package]]
 name = "encode_unicode"
@@ -1984,6 +2010,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "02b3e5e68a3a1a02aad3ec490a98007cbc13c37cbe84a3cd7b8e406d76e7f778"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "proc-macro2-diagnostics"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "af066a9c399a26e020ada66a034357a868728e72cd426f3adcd35f80d88d88c8"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+ "version_check",
 ]
 
 [[package]]
